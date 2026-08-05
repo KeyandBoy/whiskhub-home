@@ -45,7 +45,8 @@
               </div>
               <p class="card-description">{{ project.description }}</p>
               <div class="card-actions">
-                <a :href="project.url" target="_blank" rel="noopener noreferrer" class="btn btn-primary">进入项目</a>
+                <a v-if="!project.locked" :href="project.url" target="_blank" rel="noopener noreferrer" class="btn btn-primary">进入项目</a>
+                <button v-else class="btn btn-primary" @click="openLockedProject(project)">进入项目</button>
                 <a :href="project.github" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">GitHub</a>
               </div>
             </div>
@@ -96,6 +97,25 @@
         </ul>
       </div>
     </footer>
+
+    <div v-if="showPasswordModal" class="modal-overlay" @click.self="closePasswordModal">
+      <div class="modal">
+        <h3 class="modal-title">🔒 暗色叙事</h3>
+        <p class="modal-subtitle">请输入访问密码</p>
+        <input
+          v-model="passwordInput"
+          type="password"
+          class="modal-input"
+          placeholder="请输入密码"
+          @keyup.enter="submitPassword"
+        />
+        <p v-if="passwordError" class="modal-error">密码错误，请重试</p>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" @click="closePasswordModal">取消</button>
+          <button class="btn btn-primary" @click="submitPassword" :disabled="verifying">验证</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -106,9 +126,26 @@ export default {
     return {
       onlineProjects: [
         {
+          name: '暗色叙事',
+          english: 'DARK NARRATIVE',
+          url: 'https://dark-narrative1522.whiskhub.top',
+          github: 'https://github.com/KeyandBoy/dark-narrative',
+          tags: ['AI Storytelling', 'Life Simulation', 'Vue', 'Vercel Blob'],
+          description: 'AI 驱动的沉浸式互动小说。',
+          locked: true
+        },
+        {
+          name: '万爬网',
+          english: 'WanPa Web',
+          url: 'https://wanpa-web8811.whiskhub.top',
+          github: 'https://github.com/KeyandBoy/wanpa-web',
+          tags: ['Image Crawler', 'Novel Reader', 'Python', 'Vue', 'DeepSeek AI'],
+          description: '万爬网 - 图片/小说 多源批量爬取工具。'
+        },
+        {
           name: 'AI 人生重开手帐',
           english: 'AI Life Restart Journal',
-          url: 'https://ai-life-restart.whiskhub.top',
+          url: 'https://ai-life-restart0307.whiskhub.top',
           github: 'https://github.com/KeyandBoy/ai-life-restart',
           tags: ['AI Storytelling', 'Life Simulation', 'Vue', 'Vercel Blob'],
           description: '一个由 AI 驱动的人生模拟网页应用。用户可以选择世界、身份、天赋与命运，让 AI 生成一段独特的人生故事，并在终章留下人生总结、轮回馈赠与前世天赋。'
@@ -116,7 +153,7 @@ export default {
         {
           name: 'STL 模型爬取与查看工具',
           english: 'STL Crawler Viewer',
-          url: 'https://stl-crawler-viewer.whiskhub.top',
+          url: 'https://stl-crawler-viewer1718.whiskhub.top',
           github: 'https://github.com/KeyandBoy/stl-crawler-viewer',
           tags: ['STL', 'Crawler', 'Viewer', '3D Model'],
           description: '一个用于 STL 模型数据爬取、整理、浏览与查看的轻量化工具，方便集中管理模型资源和查看采集结果。'
@@ -137,8 +174,57 @@ export default {
           tags: ['STL', 'Classifier', 'Training', 'Machine Learning', 'In Progress'],
           description: '一个面向 STL 模型分类任务的训练工具项目，计划用于模型数据整理、类别标注、训练流程管理与分类实验。目前仍在开发中，暂未开放线上访问。'
         }
-      ]
+      ],
+      showPasswordModal: false,
+      passwordInput: '',
+      passwordError: false,
+      verifying: false,
+      lockedTarget: null
     };
+  },
+  methods: {
+    openLockedProject(project) {
+      this.lockedTarget = project;
+      this.passwordInput = '';
+      this.passwordError = false;
+      this.showPasswordModal = true;
+    },
+    closePasswordModal() {
+      this.showPasswordModal = false;
+      this.lockedTarget = null;
+      this.passwordError = false;
+    },
+    async submitPassword() {
+      if (this.verifying) return;
+      this.verifying = true;
+      this.passwordError = false;
+      const target = this.lockedTarget;
+      const win = window.open('', '_blank');
+      if (!win) {
+        this.passwordError = true;
+        this.verifying = false;
+        return;
+      }
+      try {
+        const res = await fetch('/api/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: this.passwordInput })
+        });
+        if (res.ok) {
+          win.location.href = target.url;
+          this.closePasswordModal();
+        } else {
+          win.close();
+          this.passwordError = true;
+        }
+      } catch (e) {
+        win.close();
+        this.passwordError = true;
+      } finally {
+        this.verifying = false;
+      }
+    }
   }
 };
 </script>
