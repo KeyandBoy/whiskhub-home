@@ -2,10 +2,10 @@
   <div class="app">
     <nav class="navbar">
       <div class="container">
-        <a href="#" class="navbar-brand">WhiskHub</a>
+        <a href="#" class="navbar-brand"><span class="brand-mark">W</span><span>WhiskHub</span></a>
         <ul class="navbar-links">
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#about">About</a></li>
+          <li><a href="#projects">项目索引</a></li>
+          <li><a href="#about">关于实验室</a></li>
           <li><a href="https://github.com/KeyandBoy" target="_blank" rel="noopener noreferrer">GitHub</a></li>
         </ul>
       </div>
@@ -15,35 +15,54 @@
       <section class="hero">
         <div class="container">
           <div class="hero-content">
-            <h1 class="hero-title">WhiskHub</h1>
-            <p class="hero-subtitle">A personal hub for AI tools, web applications and creative engineering projects.</p>
+            <p class="eyebrow"><span class="eyebrow-dot"></span> PERSONAL DIGITAL LAB · 2026</p>
+            <h1 class="hero-title">把好奇心，<em>做成可用的东西。</em></h1>
+            <p class="hero-subtitle">A quiet collection of AI tools, web experiments and creative engineering projects.</p>
             <p class="hero-description">这里收纳了我正在开发和维护的 Web 应用、AI 工具、数据处理项目与创意实验。每一个项目都是一次把想法做成真实产品的尝试。</p>
             <div class="hero-actions">
               <a href="#projects" class="btn btn-primary">查看项目</a>
               <a href="https://github.com/KeyandBoy" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">GitHub</a>
             </div>
           </div>
+          <div class="hero-orbit" aria-hidden="true">
+            <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+            <div class="orbit-core"><span>W</span><small>LAB<br>INDEX</small></div>
+          </div>
+          <div class="hero-note"><span>01</span><span>Ideas in motion<br>since 2023</span></div>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="项目概览">
+        <div class="container stats-grid">
+          <div><strong>{{ onlineProjects.length + lockedProjects.length }}</strong><span>实验项目</span></div>
+          <div><strong>{{ onlineProjects.length }}</strong><span>已上线</span></div>
+          <div><strong>04</strong><span>探索方向</span></div>
+          <div><strong>∞</strong><span>持续生长</span></div>
         </div>
       </section>
 
       <section id="projects" class="section">
         <div class="container">
-          <h2 class="section-title">Projects</h2>
+          <div class="section-heading">
+            <div><p class="eyebrow">SELECTED WORKS</p><h2 class="section-title">项目索引</h2></div>
+            <p class="section-intro">从一个念头开始，经过设计、试错与上线，最后在这里留下一个入口。</p>
+          </div>
 
-          <h3 class="section-subtitle">Online Projects</h3>
+           <h3 class="section-subtitle"><span>01</span> Online Projects <small>已上线项目</small></h3>
           <div class="card-grid">
-            <div v-for="project in onlineProjects" :key="project.name" class="card">
+             <div v-for="(project, index) in onlineProjects" :key="project.name" class="card" :style="{ '--delay': `${index * 80}ms` }">
               <div class="card-header">
                 <div>
                   <div class="card-name">{{ project.name }}</div>
                   <div class="card-english">{{ project.english }}</div>
                 </div>
-                <span class="status-badge status-online">Online</span>
+                 <span class="status-badge status-online"><i></i> Online</span>
               </div>
               <div class="card-tags">
                 <span v-for="tag in project.tags" :key="tag" class="card-tag">{{ tag }}</span>
               </div>
-              <p class="card-description">{{ project.description }}</p>
+               <p class="card-description">{{ project.description }}</p>
+               <div class="card-meta"><span>PROJECT {{ String(index + 1).padStart(2, '0') }}</span><span>↗ LIVE</span></div>
               <div class="card-actions">
                 <a v-if="!project.locked" :href="project.url" target="_blank" rel="noopener noreferrer" class="btn btn-primary">进入项目</a>
                 <button v-else class="btn btn-primary" @click="openLockedProject(project)">进入项目</button>
@@ -52,7 +71,7 @@
             </div>
           </div>
 
-          <h3 class="section-subtitle">Locked / In Progress</h3>
+           <h3 class="section-subtitle"><span>02</span> Locked / In Progress <small>正在发生</small></h3>
           <div class="card-grid">
             <div v-for="project in lockedProjects" :key="project.name" class="card card-locked">
               <div class="card-header">
@@ -60,12 +79,13 @@
                   <div class="card-name">{{ project.name }}</div>
                   <div class="card-english">{{ project.english }}</div>
                 </div>
-                <span class="status-badge status-locked">🔒 Locked</span>
+                 <span class="status-badge status-locked">LOCKED</span>
               </div>
               <div class="card-tags">
                 <span v-for="tag in project.tags" :key="tag" class="card-tag">{{ tag }}</span>
               </div>
-              <p class="card-description">{{ project.description }}</p>
+               <p class="card-description">{{ project.description }}</p>
+               <div class="card-meta"><span>IN THE MAKING</span><span>SOON</span></div>
               <div class="card-actions">
                 <button class="btn btn-primary" disabled>暂未开放</button>
                 <a :href="project.github" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">GitHub</a>
@@ -80,9 +100,11 @@
 
       <section id="about" class="section about">
         <div class="container">
-          <h2 class="section-title">About WhiskHub</h2>
+          <div class="section-heading"><div><p class="eyebrow">A NOTE FROM THE MAKER</p><h2 class="section-title">关于这个角落</h2></div></div>
           <div class="about-content">
-            <p>WhiskHub 是一个持续更新的个人项目合集站。这里记录了我在 AI 应用、Web 开发、数据处理、模型工具和课程实践方向上的探索。主站用于统一整理项目入口，让已经上线的应用可以被快速访问，也为仍在开发中的项目保留清晰的位置。</p>
+            <p>WhiskHub 是一个持续更新的个人项目合集站，也是一个把想法放在阳光下观察的实验室。这里记录我在 AI 应用、Web 开发、数据处理与模型工具方向的探索。</p>
+            <p>有些项目已经可以使用，有些还在长出骨架。它们共同组成一份开放的工作记录：不追求完美的橱窗，只保留真实的过程。</p>
+            <div class="about-signature"><span>KeyandBoy</span><span>Curiosity over certainty.</span></div>
           </div>
         </div>
       </section>
