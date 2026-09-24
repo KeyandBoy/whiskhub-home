@@ -179,6 +179,14 @@ export default {
           github: 'https://github.com/KeyandBoy/stl-crawler-viewer',
           tags: ['STL', 'Crawler', 'Viewer', '3D Model'],
           description: '一个用于 STL 模型数据爬取、整理、浏览与查看的轻量化工具，方便集中管理模型资源和查看采集结果。'
+        },
+        {
+          name: '隐匣',
+          english: 'StegoBox',
+          url: 'https://stegobox1413.whiskhub.top',
+          github: 'https://github.com/KeyandBoy/stegobox',
+          tags: ['Steganography', 'DCT', 'Image Hiding', 'Robust', 'Vanilla JS'],
+          description: '鲁棒 DCT 图像隐写工具：把图片、文件或文本藏进另一张图，抵抗 JPEG/WebP 重压缩与等比缩放，纯浏览器本地运行，不上传服务器。'
         }
       ],
       lockedProjects: [
